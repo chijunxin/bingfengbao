@@ -34,10 +34,11 @@ function handler.exec(linkobj,header,args)
         account = {type="string"},
         passwd = {type="string"},
     })
+    local response_header = httpc.allow_origin()
     if err then
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
         response.message = string.format("%s|%s",response.message,err)
-        httpc.response_json(linkobj.linkid,200,response)
+        httpc.response_json(linkobj.linkid,200,response,response_header)
         return
     end
     local appid = request.appid
@@ -45,21 +46,21 @@ function handler.exec(linkobj,header,args)
     local passwd = request.passwd
     local app = util.get_app(appid)
     if not app then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST),response_header)
         return
     end
     local appkey = app.appkey
     if not httpc.check_signature(args.sign,args,appkey) then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR),response_header)
         return
     end
     local accountobj = accountmgr.getaccount(account)
     if not accountobj then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_NOEXIST))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_NOEXIST),response_header)
         return
     end
     if passwd ~= accountobj.passwd then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.PASSWD_NOMATCH))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.PASSWD_NOMATCH),response_header)
         return
     end
     local token = accountmgr.gentoken()
@@ -70,7 +71,7 @@ function handler.exec(linkobj,header,args)
     accountmgr.addtoken(token,data)
     local response = httpc.answer.response(httpc.answer.code.OK)
     response.data = data
-    httpc.response_json(linkobj.linkid,200,response)
+    httpc.response_json(linkobj.linkid,200,response,response_header)
     return
 end
 

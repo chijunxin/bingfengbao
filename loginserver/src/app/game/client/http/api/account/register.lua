@@ -36,10 +36,11 @@ function handler.exec(linkobj,header,args)
         sdk = {type="string"},
         platform = {type="string"},
     })
+    local response_header = httpc.allow_origin()
     if err then
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
         response.message = string.format("%s|%s",response.message,err)
-        httpc.response_json(linkobj.linkid,200,response)
+        httpc.response_json(linkobj.linkid,200,response,response_header)
         return
     end
     local appid = request.appid
@@ -49,25 +50,25 @@ function handler.exec(linkobj,header,args)
     local platform = request.platform
     local app = util.get_app(appid)
     if not app then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST),response_header)
         return
     end
     local appkey = app.appkey
     if not httpc.check_signature(args.sign,args,appkey) then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR),response_header)
         return
     end
     if #account == 0 then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_FMT_ERR))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_FMT_ERR),response_header)
         return
     end
     if #passwd == 0 then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.PASSWD_FMT_ERR))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.PASSWD_FMT_ERR),response_header)
         return
     end
     local accountobj = accountmgr.getaccount(account)
     if accountobj then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_EXIST))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.ACCT_EXIST),response_header)
         return
     end
     local code = accountmgr.addaccount({
@@ -76,7 +77,7 @@ function handler.exec(linkobj,header,args)
         sdk = sdk,
         platform = platform,
     })
-    httpc.response_json(linkobj.linkid,200,httpc.answer.response(code))
+    httpc.response_json(linkobj.linkid,200,httpc.answer.response(code),response_header)
     return
 end
 

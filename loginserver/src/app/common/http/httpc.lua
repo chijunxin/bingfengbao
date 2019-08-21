@@ -43,6 +43,17 @@ function httpc.response(linkid,status,body,header)
     end
 end
 
+function httpc.allow_origin(header)
+    header = header or {}
+    if header then
+        header["Access-Control-Allow-Origin"] = "*"
+        header["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+        header["Access-Control-Allow-Credentials"] = "true"
+        header["Access-Control-Allow-Headers"] = "accept,x-requested-with,Content-Type"
+    end
+    return header
+end
+
 -- 以json格式回复一个http请求
 function httpc.response_json(linkid,status,body,header)
     if header and not header["content-type"] then

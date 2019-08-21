@@ -12,6 +12,7 @@ function cclient:open()
     self:register_http("/api/rpc",require "app.game.client.http.api.rpc")
     self:register_module("login",require("app.game.client.login"))
     self:register_module("map",require("app.game.client.map"))
+    self:register_module("player_data",require("app.game.client.player_data"))
 
     for proto,handler in pairs(self.login.C2GS) do
         proto = "C2GS_" .. proto

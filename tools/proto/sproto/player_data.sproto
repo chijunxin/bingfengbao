@@ -1,0 +1,47 @@
+# [100,200)
+# C2GS
+C2GS_GetPlayerData 100 {
+	request {
+		key 0 : string		#key 键
+	}
+}
+
+C2GS_SetPlayerData 101 {
+	request {
+		key 0 : string		#key 键
+		val 1 : string		#需要存入的数据(json格式字符串;不支持字符串型数字)
+	}
+}
+
+C2GS_PushPlayerData 102 {
+	request {
+		key 0 : string		#key 键
+		val 1 : string		#需要添加的数据(json格式字符串;不支持字符串型数字)两种形式：{\"val\": 123, \"key\":key}(val和key的值可以是数字或字符串，key是可选参数，不填默认添加到数组最后，如果key位原来有值会覆盖掉原来的值)
+	}
+}
+
+# GS2C
+GS2C_GetPlayerDataResult 150 {
+	request {
+		code 0 : integer	#返回码
+		message 1 : string	#返回码描述
+		key 2 : string		#key 键
+		val 3 : string		#保存的数据(json格式字符串),当找不到数据时返回 "[]"
+	}
+}
+
+GS2C_SetPlayerDataResult 151 {
+	request {
+		code 0 : integer	#返回码
+		message 1 : string	#返回码描述
+		key 2 : string		#key 键
+	}
+}
+
+GS2C_PushPlayerDataResult 152 {
+	request {
+		code 0 : integer	#返回码
+		message 1 : string	#返回码描述
+		key 2 : string		#key 键
+	}
+}
