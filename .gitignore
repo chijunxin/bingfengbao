@@ -10,3 +10,14 @@
 *.dSYM
 .DS_Store
 .luacheckrc
+tools/proto/sproto/sprotodump
+gg/skynet
+gg/like_skynet/3rd/skynet_package
+gg/like_skynet/3rd/lua-websocket
+gg/like_skynet/3rd/lua-webclient
+gg/like_skynet/3rd/lua-snowflake
+gg/like_skynet/3rd/lua-protobuf
+gg/like_skynet/3rd/lua-cjson
+gg/like_skynet/3rd/lua-aes
+gg/like_skynet/3rd/lfs
+gg/like_skynet/3rd/crab
