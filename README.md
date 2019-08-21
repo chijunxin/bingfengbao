@@ -51,7 +51,7 @@ stable(Make it better)
 		* [lua-5.3.5](https://www.lua.org/download.html)
 		* python-2.7.16
 			```
-			curl -R -O https://www.python.org/ftp/python/2.7.15/Python-2.7.16.tgz
+			curl -R -O https://www.python.org/ftp/python/2.7.16/Python-2.7.16.tgz
 			tar -zxvf Python-2.7.16.tgz
 			cd Python-2.7.16
 			./configure
