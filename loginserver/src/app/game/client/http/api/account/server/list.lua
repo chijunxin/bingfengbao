@@ -40,10 +40,11 @@ function handler.exec(linkobj,header,args)
         devicetype = {type="string"},           -- 设备类型
         account = {type="string",optional=true},
     })
+    response_header = httpc.allow_origin()
     if err then
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
         response.message = string.format("%s|%s",response.message,err)
-        httpc.response_json(linkobj.linkid,200,response)
+        httpc.response_json(linkobj.linkid,200,response,response_header)
         return
     end
     local appid = request.appid
@@ -54,18 +55,18 @@ function handler.exec(linkobj,header,args)
     local ip = linkobj.ip
     local app = util.get_app(appid)
     if not app then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.APPID_NOEXIST),response_header)
         return
     end
     local appkey = app.appkey
     if not httpc.check_signature(args.sign,args,appkey) then
-        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR))
+        httpc.response_json(linkobj.linkid,200,httpc.answer.response(httpc.answer.code.SIGN_ERR),response_header)
         return
     end
     local serverlist,zonelist = util.filter_serverlist(appid,version,ip,account,platform,devicetype)
     local response = httpc.answer.response(httpc.answer.code.OK)
     response.data = {serverlist=serverlist,zonelist=zonelist}
-    httpc.response_json(linkobj.linkid,200,response)
+    httpc.response_json(linkobj.linkid,200,response,response_header)
     return
 end
 
