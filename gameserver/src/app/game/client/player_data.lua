@@ -18,7 +18,6 @@ function C2GS.GetPlayerData(linkobj, message)
     end
     local val = player:get(key)
     local code = httpc.answer.code.OK
-    gg.onerror()
     gg.actor.client:sendpackage(linkobj, "GS2C_GetPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
@@ -40,7 +39,6 @@ function C2GS.SetPlayerData(linkobj, message)
     end
     player:set(key, val)
     local code = httpc.answer.code.OK
-    gg.onerror()
     gg.actor.client:sendpackage(linkobj, "GS2C_SetPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
@@ -109,7 +107,6 @@ function C2GS.PushPlayerData(linkobj, message)
     local str_new_val = cjson.encode(t_old_val)
     player:set(root_key, str_new_val)
     local code = httpc.answer.code.OK
-    gg.onerror()
     gg.actor.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
