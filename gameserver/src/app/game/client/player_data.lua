@@ -10,16 +10,16 @@ function C2GS.GetPlayerData(linkobj, message)
     local args = message.args
     local key = assert(args.key)
     local pid = assert(linkobj.pid)
-    local player = playermgr.getplayer(pid)
+    local player = gg.playermgr.getplayer(pid)
     if not player then
         local response = httpc.answer.response(httpc.answer.code.ROLE_NOEXIST)
-        gg.client:sendpackage(linkobj, "GS2C_GetPlayerDataResult", response, message.session)
+        gg.actor.client:sendpackage(linkobj, "GS2C_GetPlayerDataResult", response, message.session)
         return
     end
     local val = player:get(key)
     local code = httpc.answer.code.OK
     gg.onerror()
-    gg.client:sendpackage(linkobj, "GS2C_GetPlayerDataResult", {
+    gg.actor.client:sendpackage(linkobj, "GS2C_GetPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
         key = key,
@@ -32,16 +32,16 @@ function C2GS.SetPlayerData(linkobj, message)
     local key = assert(args.key)
     local val = assert(args.val)
     local pid = assert(linkobj.pid)
-    local player = playermgr.getplayer(pid)
+    local player = gg.playermgr.getplayer(pid)
     if not player then
         local response = httpc.answer.response(httpc.answer.code.ROLE_NOEXIST)
-        gg.client:sendpackage(linkobj, "GS2C_SetPlayerDataResult", response, message.session)
+        gg.actor.client:sendpackage(linkobj, "GS2C_SetPlayerDataResult", response, message.session)
         return
     end
     player:set(key, val)
     local code = httpc.answer.code.OK
     gg.onerror()
-    gg.client:sendpackage(linkobj, "GS2C_SetPlayerDataResult", {
+    gg.actor.client:sendpackage(linkobj, "GS2C_SetPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
         key = key,
@@ -53,17 +53,17 @@ function C2GS.PushPlayerData(linkobj, message)
     local key = assert(args.key)
     local val = assert(args.val)
     local pid = assert(linkobj.pid)
-    local player = playermgr.getplayer(pid)
+    local player = gg.playermgr.getplayer(pid)
     if not player then
         local response = httpc.answer.response(httpc.answer.code.ROLE_NOEXIST)
-        gg.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
+        gg.actor.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
         return
     end
     
     local l_key = string.split(key, ".")
     if #l_key == 0 then
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
-        gg.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
+        gg.actor.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
         return
     end
     
@@ -100,7 +100,7 @@ function C2GS.PushPlayerData(linkobj, message)
         old_val = old_val + val.val
     else
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
-        gg.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
+        gg.actor.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", response, message.session)
         return
     end
     
@@ -110,7 +110,7 @@ function C2GS.PushPlayerData(linkobj, message)
     player:set(root_key, str_new_val)
     local code = httpc.answer.code.OK
     gg.onerror()
-    gg.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", {
+    gg.actor.client:sendpackage(linkobj, "GS2C_PushPlayerDataResult", {
         code = code,
         message = httpc.answer.message[code],
         key = key,
@@ -118,7 +118,7 @@ function C2GS.PushPlayerData(linkobj, message)
 end
 
 function __hotfix(module)
-    gg.hotfix("app.net.net")
+    gg.hotfix("app.game.client.client")
 end
 
 return netplayer_data
