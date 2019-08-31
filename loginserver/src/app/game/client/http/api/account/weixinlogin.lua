@@ -41,7 +41,7 @@ function handler.exec(linkobj, header, args)
     local appid = request.appid
     local account = request.account
     local access_token = request.access_token
-
+    
     local app = util.get_app(appid)
     if not app then
         httpc.response_json(linkobj.linkid, 200, httpc.answer.response(httpc.answer.code.APPID_NOEXIST), response_header)
