@@ -52,16 +52,15 @@ function handler.exec(linkobj, header, args)
         return
     end
     -- 验证access_token
-    local weixinURL = string.format("http://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s"
-        ,access_token, account)
+    local weixinURL = string.format("http://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s", access_token, account)
     local respheader = {}
-    local status, body = httpc.get(weixinURL, "/",respheader)
+    local status, body = httpc.get(weixinURL, "/", respheader)
     local weixinargs = cjson.decode(body)
-    if weixinargs.errcode ==nil or weixinargs.errcode ~= 0 then
+    if weixinargs.errcode == nil or weixinargs.errcode ~= 0 then
         httpc.response_json(linkobj.linkid, 200, httpc.answer.response(httpc.answer.code.TOKEN_UNAUTH), response_header)
         return
     end
-
+    
     local accountobj = accountmgr.getaccount(account)
     if not accountobj then
         -- 没有找到账号，自动创建账号
