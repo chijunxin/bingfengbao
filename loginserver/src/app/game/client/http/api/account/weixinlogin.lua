@@ -41,7 +41,7 @@ function handler.exec(linkobj, header, args)
     local appid = request.appid
     local account = request.account
     local access_token = request.access_token
-    
+
     local app = util.get_app(appid)
     if not app then
         httpc.response_json(linkobj.linkid, 200, httpc.answer.response(httpc.answer.code.APPID_NOEXIST), response_header)
@@ -55,6 +55,8 @@ function handler.exec(linkobj, header, args)
     -- 验证access_token
     local weixinURL = string.format("http://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s", access_token, account)
     local respheader = {}
+    httpc.dns()
+    httpc.timeout = 300
     local status, body = httpc.get(weixinURL, "/", respheader)
     local weixinargs = cjson.decode(body)
     if weixinargs.errcode == nil or weixinargs.errcode ~= 0 then
