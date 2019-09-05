@@ -17,7 +17,7 @@
 --  type=table encode=json
 --  {
 --      code =      [required] type=number help=返回码
---      message =   [required] type=number help=返回码说明
+--      message =   [required] type=string help=返回码说明
 --  }
 --example:https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID
 --  curl -v 'http://127.0.0.1:8885/api/account/weixinlogin' -d '{"sign":"debug","appid":"appid","account":"openid","access_token":"1"}'
@@ -31,7 +31,7 @@ function handler.exec(linkobj, header, args)
         account = {type = "string"},
         access_token = {type = "string"},
     })
-    local response_header = httpc.allow_origin()
+    -- local response_header = httpc.allow_origin()
     if err then
         local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
         response.message = string.format("%s|%s", response.message, err)

@@ -17,7 +17,7 @@
 --  type=table encode=json
 --  {
 --      code =      [required] type=number help=返回码
---      message =   [required] type=number help=返回码说明
+--      message =   [required] type=string help=返回码说明
 --      data = {
 --          token =     [required] type=string help=认证TOKEN
 --      }
