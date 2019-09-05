@@ -36,4 +36,10 @@ return {
             {host = "127.0.0.1",port = 26000,username=nil,password=nil,authmod="scram_sha1",authdb="admin"},
         }
     },
+
+    --公告信息
+    notice_config = require "app.config.notice",
+
+    --微信分享地址
+    weixin_shareurl = "https://www.baidu.com",
 }

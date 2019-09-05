@@ -1,8 +1,8 @@
----微信登录
+---获取全局数据
 --@author sundream
 --@release 2019/8/29 16:30:00
 --@usage
---api:      /api/account/weixinlogin
+--api:      /api/account/getglobalvalue
 --protocol: http/https
 --method:   post
 --params:
@@ -10,25 +10,32 @@
 --  {
 --      sign         [required] type=string help=签名
 --      appid        [required] type=string help=appid
---      account      [required] type=string help=账号
---      access_token [requried] type=string help=微信验证用的token
+--      key          [required] type=string help=数据key(notice_config\weixin_shareurl)
 --  }
 --return:
 --  type=table encode=json
 --  {
 --      code =      [required] type=number help=返回码
 --      message =   [required] type=string help=返回码说明
+--      data = {
+--          key =   [required] type=string help=数据key
+--          value = [required] type=string help=数据value(值类型是任意类型)
+--      }
 --  }
---  curl -v 'http://127.0.0.1:8885/api/account/weixinlogin' -d '{"sign":"debug","appid":"appid","account":"openid","access_token":"1"}'
+--  curl -v 'http://127.0.0.1:8885/api/account/getglobalvalue' -d '{"sign":"debug","appid":"appid","key":"notice_config"}'
 
 local handler = {}
+
+local safe_key = {
+    notice_config = true,
+    weixin_shareurl = true,
+}
 
 function handler.exec(linkobj, header, args)
     local request, err = table.check(args, {
         sign = {type = "string"},
         appid = {type = "string"},
-        account = {type = "string"},
-        access_token = {type = "string"},
+        key = {type = "string"},
     })
     -- local response_header = httpc.allow_origin()
     if err then
@@ -37,9 +44,13 @@ function handler.exec(linkobj, header, args)
         httpc.response_json(linkobj.linkid, 200, response, response_header)
         return
     end
-    local appid = request.appid
-    local account = request.account
-    local access_token = request.access_token
+    local key = request.key
+    if not safe_key[key] then
+        local response = httpc.answer.response(httpc.answer.code.PARAM_ERR)
+        response.message = string.format("%s|%s", response.message, key)
+        httpc.response_json(linkobj.linkid, 200, response, response_header)
+        return
+    end
     
     local app = util.get_app(appid)
     if not app then
@@ -51,38 +62,11 @@ function handler.exec(linkobj, header, args)
         httpc.response_json(linkobj.linkid, 200, httpc.answer.response(httpc.answer.code.SIGN_ERR), response_header)
         return
     end
-    -- 验证access_token
-    local weixinURL = string.format("/sns/auth?access_token=%s&openid=%s", access_token, account)
-    local respheader = {}
-    httpc.dns()
-    httpc.timeout = 300
-    local status, body = httpc.get("api.weixin.qq.com", weixinURL, respheader)
-    local weixinargs = cjson.decode(body)
-    if weixinargs.errcode == nil or weixinargs.errcode ~= 0 then
-        httpc.response_json(linkobj.linkid, 200, httpc.answer.response(httpc.answer.code.TOKEN_UNAUTH), response_header)
-        return
-    end
-    
-    local accountobj = accountmgr.getaccount(account)
-    if not accountobj then
-        -- 没有找到账号，自动创建账号
-        local code = accountmgr.addaccount({
-            account = account,
-            passwd = "",
-            sdk = "weixin",
-            platform = "weixin",
-        })
-        if code ~= httpc.answer.code.OK then
-            httpc.response_json(linkobj.linkid, 200, httpc.answer.response(code), response_header)
-            return
-        end
-    end
-    local token = access_token
+    local value = skynet.getenv(key)
     local data = {
-        token = token,
-        account = account,
+        key = key,
+        value = value,
     }
-    accountmgr.addtoken(token, data)
     local response = httpc.answer.response(httpc.answer.code.OK)
     response.data = data
     httpc.response_json(linkobj.linkid, 200, response, response_header)

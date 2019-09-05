@@ -21,6 +21,7 @@ function cclient:open()
     self:register_http("/api/account/server/list",require "app.game.client.http.api.account.server.list")
     --微信
     self:register_http("/api/account/weixinlogin",require "app.game.client.http.api.account.weixinlogin")
+    self:register_http("/api/account/getglobalvalue",require "app.game.client.http.api.account.getglobalvalue")
 end
 
 function __hotfix(module)
