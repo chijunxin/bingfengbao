@@ -41,5 +41,5 @@ return {
     notice_config = require "app.config.notice",
 
     --微信分享地址
-    weixin_shareurl = "https://www.baidu.com",
+    weixin_shareurl = require "app.config.weixinshare"
 }
